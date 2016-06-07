@@ -41,9 +41,11 @@ function usage() {
     echo "                      looked for (as long there is only one)"
     echo "       -w <%>         the warning threshold ratio current/max in %"
     echo "       -c <%>         the critical threshold ratio current/max in %"
+    echo "       -P <%>         the file path which define PID of process to monitor  %"
+    echo "       -H <%>         JAVA_HOME %"
 }
 
-VERSION='1.4'
+VERSION='1.4.1'
 service=''
 pid=''
 ws=-1
@@ -69,6 +71,10 @@ while getopts hvp:s:j:w:c: opt ; do
         ;;
     c)  cs="${OPTARG}"
         ;;
+    P)  pidfilepath="${OPTARG}"
+        ;;
+    H)  javahome="${OPTARG}"
+        ;;
     esac
 done
 
@@ -92,6 +98,18 @@ if [ -n "$service" -a $use_jps -eq 1 ] ; then
     echo "Only one of -s or -j parameter must be provided"
     usage $0
     exit 3
+fi
+
+if [ ! -f "${pidfilepath}" -o ! -r "${pidfilepath}" ]; then
+	 echo "no (No such file ${pidfilepath} or cannot read ${pidfilepath}"
+	 exit 3
+fi
+
+if [ -n "${javahome}"]; then
+  if [ ! -x "${javahome}/bin/jstat" ]; then
+  	 echo "no (No jstat found in ${JAVA_HOME}/bin)"
+ 		 exit 3
+	fi
 fi
 
 if [ $use_jps -eq 1 ] ; then
