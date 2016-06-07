@@ -102,7 +102,7 @@ if [ -n "$javahome" ]; then
   	 echo "no (No jstat found in $JAVA_HOME/bin)"
  		 exit 3
   else
-     PATH=$PATH;$javahome/bin
+     PATH=$PATH:$javahome/bin
 	fi
 fi
 
