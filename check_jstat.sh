@@ -41,7 +41,6 @@ function usage() {
     echo "                      looked for (as long there is only one)"
     echo "       -w <%>         the warning threshold ratio current/max in %"
     echo "       -c <%>         the critical threshold ratio current/max in %"
-    echo "       -P <%>         the file path which define PID of process to monitor  %"
     echo "       -H <%>         JAVA_HOME %"
 }
 
@@ -52,7 +51,7 @@ ws=-1
 cs=-1
 use_jps=0
 
-while getopts hvp:s:j:w:c: opt ; do
+while getopts hvp:s:j:w:c:H opt ; do
     case ${opt} in
     v)  echo "$0 version $VERSION"
         exit 0
@@ -71,14 +70,12 @@ while getopts hvp:s:j:w:c: opt ; do
         ;;
     c)  cs="${OPTARG}"
         ;;
-    f)  pidfilepath="${OPTARG}"
-        ;;
-    a)  javahome="${OPTARG}"
+    H)  javahome="${OPTARG}"
         ;;
     esac
 done
 
-if [ -z "$pid" -a -z "$service" -a $use_jps -eq 0 -a -z $javahome] ; then
+if [ -z "$pid" -a -z "$service" -a $use_jps -eq 0 ] ; then
     echo "One of -p, -s or -j parameter must be provided"
     usage $0
     exit 3
@@ -100,21 +97,12 @@ if [ -n "$service" -a $use_jps -eq 1 ] ; then
     exit 3
 fi
 
-if [ -n "$pid" -a -n "$pidfilepath" ] ; then
-    echo "Only one of -p or -P parameter must be provided"
-    usage $0
-    exit 3
-fi
-
-if [ ! -f "$pidfilepath" -o ! -r "$pidfilepath" ]; then
-	 echo "no (No such file $pidfilepath or cannot read $pidfilepath"
-	 exit 3
-fi
-
 if [ -n "$javahome"]; then
   if [ ! -x "$javahome/bin/jstat" ]; then
   	 echo "no (No jstat found in $JAVA_HOME/bin)"
  		 exit 3
+  else
+     $PATH=$PATH;$javahome/bin
 	fi
 fi
 
@@ -132,6 +120,8 @@ if [ $use_jps -eq 1 ] ; then
     pid=$(echo "$java" | cut -d ' ' -f 1)
     label=${java_name:-$(echo "$java" | cut -d ' ' -f 2)}
 elif [ -n "$service" ] ; then
+    if [ -n "$pidfilepath"] ; then
+      pid
     if [ ! -r /var/run/${service}.pid ] ; then
         echo "/var/run/${service}.pid not found"
         exit 3
