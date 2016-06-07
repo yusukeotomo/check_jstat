@@ -51,7 +51,7 @@ ws=-1
 cs=-1
 use_jps=0
 
-while getopts hvp:s:j:w:c:H opt ; do
+while getopts hvp:s:j:w:c:H: opt ; do
     case ${opt} in
     v)  echo "$0 version $VERSION"
         exit 0
@@ -120,8 +120,6 @@ if [ $use_jps -eq 1 ] ; then
     pid=$(echo "$java" | cut -d ' ' -f 1)
     label=${java_name:-$(echo "$java" | cut -d ' ' -f 2)}
 elif [ -n "$service" ] ; then
-    if [ -n "$pidfilepath"] ; then
-      pid
     if [ ! -r /var/run/${service}.pid ] ; then
         echo "/var/run/${service}.pid not found"
         exit 3
