@@ -71,9 +71,9 @@ while getopts hvp:s:j:w:c: opt ; do
         ;;
     c)  cs="${OPTARG}"
         ;;
-    P)  pidfilepath="${OPTARG}"
+    f)  pidfilepath="${OPTARG}"
         ;;
-    H)  javahome="${OPTARG}"
+    a)  javahome="${OPTARG}"
         ;;
     esac
 done
