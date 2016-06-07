@@ -97,7 +97,7 @@ if [ -n "$service" -a $use_jps -eq 1 ] ; then
     exit 3
 fi
 
-if [ -n "$javahome"]; then
+if [ -n "$javahome" ]; then
   if [ ! -x "$javahome/bin/jstat" ]; then
   	 echo "no (No jstat found in $JAVA_HOME/bin)"
  		 exit 3
